@@ -75,8 +75,9 @@ type Game struct {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{0xff, 0xff, 0xff, 0xff})
 
+	op := &ebiten.DrawImageOptions{}
 	for idx := range g.gophers {
-		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Reset()
 		op.GeoM.Translate(g.gophers[idx].PosX, g.gophers[idx].PosY)
 		screen.DrawImage(g.gopherImg, op)
 	}
