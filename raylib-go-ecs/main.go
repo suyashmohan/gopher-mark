@@ -48,6 +48,9 @@ func main() {
 			}
 		}
 
+		rl.BeginDrawing()
+		rl.ClearBackground(rl.RayWhite)
+
 		query := filter.Query()
 		for query.Next() {
 			pos, vel := query.Get()
@@ -60,14 +63,7 @@ func main() {
 			}
 			pos.X += vel.DX
 			pos.Y += vel.DY
-		}
 
-		rl.BeginDrawing()
-		rl.ClearBackground(rl.RayWhite)
-
-		query = filter.Query()
-		for query.Next() {
-			pos, _ := query.Get()
 			rl.DrawTexture(gopherTex, pos.X, pos.Y, rl.White)
 		}
 		rl.DrawText(fmt.Sprintf("Gophers: %d", world.Stats().Entities.Total), 8, 8, 14, rl.Black)
