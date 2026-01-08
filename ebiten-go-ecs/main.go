@@ -32,18 +32,18 @@ type Game struct {
 	world          *ecs.World
 	mapper         *ecs.Map2[Position, Velocity]
 	filter         *ecs.Filter2[Position, Velocity]
+	op             *ebiten.DrawImageOptions
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{0xff, 0xff, 0xff, 0xff})
 
-	op := &ebiten.DrawImageOptions{}
 	query := g.filter.Query()
 	for query.Next() {
 		pos, _ := query.Get()
-		op.GeoM.Reset()
-		op.GeoM.Translate(pos.X, pos.Y)
-		screen.DrawImage(g.gopherImg, op)
+		g.op.GeoM.Reset()
+		g.op.GeoM.Translate(pos.X, pos.Y)
+		screen.DrawImage(g.gopherImg, g.op)
 	}
 	//ebitenutil.DebugPrint(screen, fmt.Sprintf("Gophers: %d", len(g.gophers)))
 	textOp := &text.DrawOptions{}
@@ -59,23 +59,36 @@ func (g *Game) Layout(outsideWidth int, outsideHeight int) (screenWidth int, scr
 }
 
 func (g *Game) Update() error {
+	maxX := float64(SCREEN_WIDTH - g.gopherImg.Bounds().Dx())
+	maxY := float64(SCREEN_HEIGHT - g.gopherImg.Bounds().Dy())
+
 	query := g.filter.Query()
 	for query.Next() {
 		pos, vel := query.Get()
-		if pos.X+vel.DX > float64(SCREEN_WIDTH-g.gopherImg.Bounds().Dx()) || pos.X < 0 {
+		
+		pos.X += vel.DX
+		pos.Y += vel.DY
+
+		if pos.X > maxX {
+			pos.X = maxX
+			vel.DX *= -1
+		} else if pos.X < 0 {
+			pos.X = 0
 			vel.DX *= -1
 		}
 
-		if pos.Y+vel.DY > float64(SCREEN_HEIGHT-g.gopherImg.Bounds().Dy()) || pos.Y < 0 {
+		if pos.Y > maxY {
+			pos.Y = maxY
+			vel.DY *= -1
+		} else if pos.Y < 0 {
+			pos.Y = 0
 			vel.DY *= -1
 		}
-		pos.X += vel.DX
-		pos.Y += vel.DY
 	}
 	if inpututil.IsKeyJustReleased(ebiten.KeySpace) {
 		for range g.gopherAddCount {
 			_ = g.mapper.NewEntity(
-				&Position{X: float64(rand.Intn(SCREEN_WIDTH - g.gopherImg.Bounds().Dx())), Y: float64(rand.Intn(SCREEN_HEIGHT - g.gopherImg.Bounds().Dy()))},
+				&Position{X: float64(rand.Intn(int(maxX))), Y: float64(rand.Intn(int(maxY)))},
 				&Velocity{DX: float64(1 + rand.Int31n(10)), DY: float64(1 + rand.Int31n(10))},
 			)
 		}
@@ -100,6 +113,7 @@ func main() {
 		world:          world,
 		mapper:         mapper,
 		filter:         filter,
+		op:             &ebiten.DrawImageOptions{},
 	}
 
 	for range g.gopherAddCount {
