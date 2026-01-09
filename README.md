@@ -12,6 +12,8 @@ When using _Mac M1 Pro_ and running game in 1920x1080:
 - _Raylib-Go_ was able to keep 60 fps until _40,000_ gophers after which fps
   drops
 - _Ebiten_ was able to keep 60 fps until _55,000_ gophers after which fps drops
+- ECS version made with Ark, had similar performance
+- _SDL3-Go_ was able to keep 60 fps until _110,000_ gophers after which fps drops
 - _Raylib (C)_ was able to keep 60 fps until _120,000_ gophers after which fps drops
 
 # Learnings (Abstract from Gemini's explanation)
