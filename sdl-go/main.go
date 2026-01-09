@@ -78,12 +78,15 @@ func main() {
 
 	var frameCount uint32
 	var fpsUpdateTime uint64 = sdl.GetTicks()
+	//var lastFrameTime uint64 = sdl.GetTicks()
+	//var deltaTime float64
 	running := true
 
 	sdl.SetRenderDrawColor(renderer, 255, 255, 255, sdl.AlphaOpaque)
 	for running {
 		currentTime := sdl.GetTicks()
-		frameCount++
+		//deltaTime = float64(currentTime-lastFrameTime) / 1000.0
+		//lastFrameTime = currentTime
 
 		var event sdl.Event
 		for sdl.PollEvent(&event) {
@@ -97,6 +100,7 @@ func main() {
 			}
 		}
 
+		frameCount++
 		if currentTime-fpsUpdateTime >= 1000 {
 			fps := float64(frameCount) / ((float64(currentTime) - float64(fpsUpdateTime)) / 1000.0)
 			if frameCount > 58 {
