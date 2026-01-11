@@ -15,6 +15,8 @@ When using _Mac M1 Pro_ and running game in 1920x1080:
 - ECS version made with Ark, had similar performance
 - _SDL3-Go_ was able to keep 60 fps until _110,000_ gophers after which fps drops
 - _Raylib (C)_ was able to keep 60 fps until _120,000_ gophers after which fps drops
+- _Bevy (Rust)_ couldn't even manage to get stable FPS. The fps is varying too much.
+  It's possible my implementation is wrong, or Bevy just works differently.
 
 # Learnings (Abstract from Gemini's explanation)
 
