@@ -1,4 +1,5 @@
 use bevy::{
+    asset::AssetMetaCheck,
     diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin},
     prelude::*,
 };
@@ -11,15 +12,20 @@ const GOPHER_COUNT: usize = 1000;
 fn main() {
     App::new()
         .add_plugins((
-            DefaultPlugins.set(WindowPlugin {
-                primary_window: Some(Window {
-                    title: "gopher mark".into(),
-                    resolution: (SCREEN_WIDTH, SCREEN_HEIGHT).into(),
-                    present_mode: bevy::window::PresentMode::Fifo,
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        title: "gopher mark".into(),
+                        resolution: (SCREEN_WIDTH, SCREEN_HEIGHT).into(),
+                        present_mode: bevy::window::PresentMode::Fifo,
+                        ..default()
+                    }),
+                    ..default()
+                })
+                .set(AssetPlugin {
+                    meta_check: AssetMetaCheck::Never,
                     ..default()
                 }),
-                ..default()
-            }),
             FrameTimeDiagnosticsPlugin::default(),
         ))
         .add_systems(Startup, setup)
